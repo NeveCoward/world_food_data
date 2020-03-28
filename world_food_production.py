@@ -1,4 +1,5 @@
 import csv
+from operator import itemgetter
 
 with open('world_food_production_2018.csv', 'r') as csv_file:
     food_data = csv.DictReader(csv_file)
@@ -43,3 +44,23 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
     print(areas[desired_country])
 
     ################################################################################################neve above, fenella below
+
+    country_names = []
+    total_prod = []
+
+    for country in food_data:
+        food_totals = (int(country['Citrus_fruit']) + int(country['Eggs']) + int(country['Treenuts']) + int(
+            country['Pulses']) + int(country['Coarse_grain']) + int(country['Meat']) + int(
+            country['Roots_and_tubers']) + int(country['Vegetables']) + int(country['Milk']) + int(
+            country['Fruit']) + int(country['Cereals']))
+        country_names.append(country['Country'])
+        total_prod.append(food_totals)
+
+    country_totals = dict(zip(country_names,total_prod))
+    country_ranked = dict(reversed(sorted(country_totals.items(), key=itemgetter(1))))
+
+    count = 0
+
+    for x in list(country_ranked)[:10]:
+        count = count + 1
+        print('The no.{} food producer in 2018 was {}, and they produced {} tonnes of food' .format(count, x, country_ranked[x]))
