@@ -59,7 +59,7 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
     print('Here is the weight in tonnes per food group produced by that region in 2018:')
     print(areas[desired_country])
     print('\n')
-
+##we need some sort of pause function here lol so graph doesnt pop up so quickly
 
     citrus_country = np.array(())
     for country in food_data:
@@ -69,6 +69,7 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
     for country in food_data:
         country_name = np.append(country_name, (country['Country']))
 
+    print('Here is the food production in the top 10 producing countries, by food type, represented visually:')
     plt.figure()
     plt.scatter(country_name, citrus_country)
     plt.ylabel('Tonnes')
