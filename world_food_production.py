@@ -2,6 +2,10 @@ import csv
 from operator import itemgetter
 import matplotlib.pyplot as plt
 import numpy as np
+import pycountry
+import pandas as pd
+import plotly.express as px
+import plotly.offline as offline
 
 with open('world_food_production_2018.csv', 'r') as csv_file:
     food_data = csv.DictReader(csv_file)
@@ -79,6 +83,7 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
 
     ###############################################################################################################################
 
+    print(color.BOLD + color.UNDERLINE + 'TOP TEN FOOD PRODUCERS WORLDWIDE (2018):' + color.END)
     country_names = []
     total_prod = []
 
@@ -97,4 +102,36 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
 
     for x in list(country_ranked)[:10]:
         count = count + 1
-        print('The no.{} food producer in 2018 was {}, and they produced {} tonnes of food' .format(count, x, country_ranked[x]))
+        print('The No.{} food producer in 2018 was {}, and they produced {} tonnes of food' .format(count, x, country_ranked[x]))
+        print('\n')
+
+#choropleth map
+#find and replace for conflicting country names - need to make fuzzy search for this to work properly
+country_names = [country.replace('Mainland China', 'China') for country in country_names]
+country_names = [country.replace('USA', 'United States') for country in country_names]
+country_names = [country.replace('Russia', 'Russian Federation') for country in country_names]
+country_names = [country.replace('Vietnam', 'Viet Nam') for country in country_names]
+
+#assign country codes to country names
+countries = {}
+for country in pycountry.countries:
+    countries[country.name] = country.alpha_3
+
+country_codes = [countries.get(country, 'Unkwnown code') for country in country_names]
+
+#make pandas dataframe
+data = {'Code': country_codes,
+        'Name': country_names,
+        'Production': total_prod}
+
+df = pd.DataFrame(data)
+
+#use plotly to make map
+fig = px.choropleth(df, locations='Code',
+                     locationmode='ISO-3',
+                     color='Production',
+                     hover_name='Name',
+                     color_continuous_scale=px.colors.sequential.Plasma)
+
+offline.init_notebook_mode()
+offline.plot(fig, auto_open=True, image='png', image_filename='test', output_type='file', image_width=800, image_height=600, filename='temp-plot.html', validate=False)
