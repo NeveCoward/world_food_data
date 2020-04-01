@@ -53,32 +53,29 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
 
     for x in list(country_ranked)[:10]:
         count = count + 1
-        print('The No.{} food producer in 2018 was {}, and they produced {} tonnes of food'.format(count, x,
+        print('The No.{} food producer in 2018 was {}, and they produced {} tonnes of food.'.format(count, x,
                                                                                                    country_ranked[x]))
         print('\n')
 
-    print('Here is the food production in the top 10 producing countries, by food type, represented visually:')
-    time.sleep(5)
-
-
-    citrus_country = np.array(())
+        citrus_country = np.array(())
+    country_nombre = np.array(())
     for country in food_data:
         citrus_country = np.append(citrus_country, int(country['Citrus_fruit']))
-        citrus_country_sorted = sorted(reversed(citrus_country))
-        citrus_top_10 = citrus_country_sorted[:10]
-    print(citrus_top_10)
+        country_nombre = np.append(country_nombre, country['Country'])
 
-    country_name = np.array(())
-    for country in food_data:
-        country_name = np.append(country_name, (country['Country']))
+    indexes = np.argsort(citrus_country)[::-1][:10]
+    citrus_top10 = citrus_country[indexes]
+    country_top10 = country_nombre[indexes]
 
-
-    #plt.figure()
-    #plt.scatter(country_name, citrus_top_10)
-    #plt.ylabel('Tonnes')
-    #plt.xlabel('Country')
-    #plt.title('Tonnes of citrus produced by country')
-    #plt.show()
+    graph= input(color.BOLD + 'Here is top 10 producers of citrus, represented visually. To activate graph, type: activate'+ color.END + '\n').strip()
+    if graph == "activate":
+        plt.figure()
+        plt.scatter(country_top10, citrus_top10)
+        plt.ylabel('Tonnes')
+        plt.xlabel('Country')
+        plt.xticks(rotation=90)
+        plt.title('Top 10 producers of citrus in tonnes')
+        plt.show()
 
     areas = {
     'asia': {},
@@ -111,6 +108,11 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
     print(areas[desired_country])
     print('\n')
 
+    time.sleep(8)
+
+    print('You will now be taken to a map to show total food production per country in 2018!')
+
+    time.sleep(2)
 
 
 ###############################################################################################################################
