@@ -6,6 +6,7 @@ import pycountry
 import pandas as pd
 import plotly.express as px
 import plotly.offline as offline
+import time
 
 with open('world_food_production_2018.csv', 'r') as csv_file:
     food_data = csv.DictReader(csv_file)
@@ -32,6 +33,52 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
         tonnes = int(country_data[food])
         food_formatted = food.replace('_', ' ')
         print('{} produced the most {}: {} tonnes.'.format(country_data['Country'], food_formatted, tonnes) +'\n')
+
+    print(color.BOLD + color.UNDERLINE + 'TOP TEN FOOD PRODUCERS WORLDWIDE (2018):' + color.END)
+    country_names = []
+    total_prod = []
+
+    for country in food_data:
+        food_totals = (int(country['Citrus_fruit']) + int(country['Eggs']) + int(country['Treenuts']) + int(
+            country['Pulses']) + int(country['Coarse_grain']) + int(country['Meat']) + int(
+            country['Roots_and_tubers']) + int(country['Vegetables']) + int(country['Milk']) + int(
+            country['Fruit']) + int(country['Cereals']))
+        country_names.append(country['Country'])
+        total_prod.append(food_totals)
+
+    country_totals = dict(zip(country_names, total_prod))
+    country_ranked = dict(reversed(sorted(country_totals.items(), key=itemgetter(1))))
+
+    count = 0
+
+    for x in list(country_ranked)[:10]:
+        count = count + 1
+        print('The No.{} food producer in 2018 was {}, and they produced {} tonnes of food'.format(count, x,
+                                                                                                   country_ranked[x]))
+        print('\n')
+
+    print('Here is the food production in the top 10 producing countries, by food type, represented visually:')
+    time.sleep(5)
+
+
+    citrus_country = np.array(())
+    for country in food_data:
+        citrus_country = np.append(citrus_country, int(country['Citrus_fruit']))
+        citrus_country_sorted = sorted(reversed(citrus_country))
+        citrus_top_10 = citrus_country_sorted[:10]
+    print(citrus_top_10)
+
+    country_name = np.array(())
+    for country in food_data:
+        country_name = np.append(country_name, (country['Country']))
+
+
+    #plt.figure()
+    #plt.scatter(country_name, citrus_top_10)
+    #plt.ylabel('Tonnes')
+    #plt.xlabel('Country')
+    #plt.title('Tonnes of citrus produced by country')
+    #plt.show()
 
     areas = {
     'asia': {},
@@ -63,47 +110,11 @@ with open('world_food_production_2018.csv', 'r') as csv_file:
     print('Here is the weight in tonnes per food group produced by that region in 2018:')
     print(areas[desired_country])
     print('\n')
-##we need some sort of pause function here lol so graph doesnt pop up so quickly
 
-    citrus_country = np.array(())
-    for country in food_data:
-        citrus_country = np.append(citrus_country, int(country['Citrus_fruit']))
 
-    country_name = np.array (())
-    for country in food_data:
-        country_name = np.append(country_name, (country['Country']))
 
-    print('Here is the food production in the top 10 producing countries, by food type, represented visually:')
-    plt.figure()
-    plt.scatter(country_name, citrus_country)
-    plt.ylabel('Tonnes')
-    plt.xlabel('Country')
-    plt.title('Tonnes of citrus produced by country')
-    plt.show()
+###############################################################################################################################
 
-    ###############################################################################################################################
-
-    print(color.BOLD + color.UNDERLINE + 'TOP TEN FOOD PRODUCERS WORLDWIDE (2018):' + color.END)
-    country_names = []
-    total_prod = []
-
-    for country in food_data:
-        food_totals = (int(country['Citrus_fruit']) + int(country['Eggs']) + int(country['Treenuts']) + int(
-            country['Pulses']) + int(country['Coarse_grain']) + int(country['Meat']) + int(
-            country['Roots_and_tubers']) + int(country['Vegetables']) + int(country['Milk']) + int(
-            country['Fruit']) + int(country['Cereals']))
-        country_names.append(country['Country'])
-        total_prod.append(food_totals)
-
-    country_totals = dict(zip(country_names,total_prod))
-    country_ranked = dict(reversed(sorted(country_totals.items(), key=itemgetter(1))))
-
-    count = 0
-
-    for x in list(country_ranked)[:10]:
-        count = count + 1
-        print('The No.{} food producer in 2018 was {}, and they produced {} tonnes of food' .format(count, x, country_ranked[x]))
-        print('\n')
 
 #choropleth map
 #find and replace for conflicting country names - need to make fuzzy search for this to work properly
